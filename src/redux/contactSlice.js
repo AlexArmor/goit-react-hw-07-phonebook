@@ -1,7 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchContacts, addContacts, deleteContacts } from './operations';
 
-// const contactsInitialState = { items: [] };
+const handlePending = state => {
+  state.isLoading = true;
+};
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
 const contactSlice = createSlice({
   name: 'contacts',
@@ -11,35 +17,26 @@ const contactSlice = createSlice({
     error: null,
   },
   extraReducers: {
-    [fetchContacts.pending](state) {
-      state.isLoading = true;
-    },
+    [fetchContacts.pending]: handlePending,
+    [addContacts.pending]: handlePending,
+    [deleteContacts.pending]: handlePending,
+
+    [fetchContacts.rejected]: handleRejected,
+    [addContacts.rejected]: handleRejected,
+    [deleteContacts.rejected]: handleRejected,
+
     [fetchContacts.fulfilled](state, action) {
       state.isLoading = false;
       state.error = null;
       state.items = action.payload;
     },
-    [fetchContacts.rejected](state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
 
-    [addContacts.pending](state) {
-      state.isLoading = true;
-    },
     [addContacts.fulfilled](state, action) {
       state.isLoading = false;
       state.error = null;
       state.items.push(action.payload);
     },
-    [addContacts.rejected](state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
 
-    [deleteContacts.pending](state) {
-      state.isLoading = true;
-    },
     [deleteContacts.fulfilled](state, action) {
       state.isLoading = false;
       state.error = null;
@@ -48,20 +45,7 @@ const contactSlice = createSlice({
       );
       state.items.splice(index, 1);
     },
-    [deleteContacts.rejected](state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
   },
-  // addContacts(state, { payload }) {
-  //   state.items = [...state.items, payload];
-  // },
-  // deleteContacts(state, { payload }) {
-  //   state.items = state.items.filter(contact => contact.id !== payload);
-  // },
 });
 
-// export const { fetchingInProgress, fetchingSuccess, fetchingError } =
-//   contactSlice.actions;
-// export const { addContacts, deleteContacts } = contactSlice.actions;
 export const contactReducer = contactSlice.reducer;
