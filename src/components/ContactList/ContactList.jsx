@@ -1,22 +1,16 @@
-import { useEffect } from 'react';
-import { fetchContacts } from 'redux/operations';
-import { getContacts } from 'redux/selectors';
+import { getContacts, getFilter } from 'redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContacts } from 'redux/contactSlice';
+import { deleteContacts } from 'redux/operations';
 import { Item } from './ContactList.styled';
 import { BtnDeleteItem } from './ContactList.styled';
 
 export const ContactList = () => {
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase().trim())
   );
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
 
   return (
     <ul>
@@ -26,10 +20,7 @@ export const ContactList = () => {
             {name}: {number}
             <BtnDeleteItem
               type="button"
-              onClick={() => {
-                const action = deleteContacts(id);
-                dispatch(action);
-              }}
+              onClick={() => dispatch(deleteContacts(id))}
             >
               delete
             </BtnDeleteItem>
