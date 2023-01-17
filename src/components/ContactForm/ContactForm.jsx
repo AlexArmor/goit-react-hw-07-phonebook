@@ -24,7 +24,7 @@ export const ContactForm = () => {
     }
     const contact = {
       name,
-      number,
+      phone: number,
       id: nanoid(),
     };
     dispatch(addContacts(contact));
